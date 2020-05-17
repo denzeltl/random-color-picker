@@ -1,44 +1,40 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState, useEffect } from 'react';
+import Button from '../Button/Button';
 
-class Random extends React.Component {
-    componentDidMount() {
-        this.applyColor();
-    }
+function Random() {
+    const [color, setColor] = useState([92, 132, 153]);
 
-    componentDidUpdate(prevProps, prevState) {
-        this.applyColor();
-    }
+    useEffect(() => {
+        applyColor();
+    });
 
-    formatColor(ary) {
+    const handleClick = () => {
+        setColor(chooseColor);
+    };
+
+    const formatColor = (ary) => {
         return 'rgb(' + ary.join(', ') + ')';
-    }
+    };
 
-    isLight() {
-        const rgb = this.state.color;
-        return rgb.reduce((a, b) => a + b) < 127 * 3;
-    }
+    const applyColor = () => {
+        const newColor = formatColor(color);
+        document.body.style.background = newColor;
+    };
 
-    applyColor() {
-        const color = this.formatColor(this.state.color);
-        document.body.style.background = color;
-    }
-
-    chooseColor() {
+    const chooseColor = () => {
         const random = [];
         for (let i = 0; i < 3; i++) {
             random.push(Math.floor(Math.random() * 256));
         }
         return random;
-    }
+    };
 
-    render() {
-        return (
-            <div>
-                <h1 className={this.isLight() ? 'white' : 'black'}></h1>
-            </div>
-        );
-    }
+    return (
+        <div>
+            <h1 className={color.reduce((a, b) => a + b) < 127 * 3 ? 'white' : 'black'}>Your color is {formatColor(color)}.</h1>
+            <Button light={color.reduce((a, b) => a + b) < 127 * 3} onClick={handleClick} />
+        </div>
+    );
 }
 
-ReactDOM.render(<Random />, document.getElementById('app'));
+export default Random;
